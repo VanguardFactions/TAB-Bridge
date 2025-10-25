@@ -16,4 +16,7 @@ dependencies {
         exclude("org.ow2.asm", "asm")
         exclude("net.md-5", "bungeecord-chat")
     }
+    compileOnly("com.vanguardfactions:core-api:0.0.1")
+    compileOnly("com.massivecraft:Factions:1.6.9.5-4.1.6-BETA")
+
 }

@@ -1,15 +1,13 @@
 package me.neznamy.tab.bridge.bukkit;
 
+import com.vanguardfactions.tab.FactionUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.neznamy.tab.bridge.shared.BridgePlayer;
 import me.neznamy.tab.bridge.shared.Platform;
 import me.neznamy.tab.bridge.shared.TABBridge;
-import me.neznamy.tab.bridge.shared.placeholder.Placeholder;
-import me.neznamy.tab.bridge.shared.placeholder.PlayerPlaceholder;
-import me.neznamy.tab.bridge.shared.placeholder.RelationalPlaceholder;
-import me.neznamy.tab.bridge.shared.placeholder.ServerPlaceholder;
+import me.neznamy.tab.bridge.shared.placeholder.*;
 import me.neznamy.tab.bridge.shared.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -87,9 +85,16 @@ public class BukkitPlatform implements Platform {
         if (privateIdentifier.startsWith("%server_")) {
             return new ServerPlaceholder(publicIdentifier, refresh, () -> parseWithNestedPlaceholders(null, privateIdentifier));
         } else if (privateIdentifier.startsWith("%rel_")) {
+
+            // VANGUARD - START
+            if (privateIdentifier.equals("%rel_vanguard_faction%")) { // TODO: Should move this to a separate addon module
+                return new RelationalOfflinePlaceholder(publicIdentifier, refresh, FactionUtil::getRelationTag);
+            }
+            // VANGUARD - END
+
             return new RelationalPlaceholder(publicIdentifier, refresh, (viewer, target) ->
-                    PlaceholderAPI.setRelationalPlaceholders(((BukkitBridgePlayer)viewer).getPlayer(),
-                            ((BukkitBridgePlayer)target).getPlayer(), privateIdentifier));
+                PlaceholderAPI.setRelationalPlaceholders(((BukkitBridgePlayer) viewer).getPlayer(),
+                    ((BukkitBridgePlayer) target).getPlayer(), privateIdentifier));
         } else {
             return new PlayerPlaceholder(publicIdentifier, refresh, p ->
                     parseWithNestedPlaceholders(((BukkitBridgePlayer)p).getPlayer(), privateIdentifier));

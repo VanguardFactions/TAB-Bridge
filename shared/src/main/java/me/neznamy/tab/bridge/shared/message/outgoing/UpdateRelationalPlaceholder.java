@@ -2,9 +2,13 @@ package me.neznamy.tab.bridge.shared.message.outgoing;
 
 import com.google.common.io.ByteArrayDataOutput;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NonNull;
+import lombok.ToString;
 
 @AllArgsConstructor
+@Data
+@ToString
 public class UpdateRelationalPlaceholder implements OutgoingMessage {
 
     @NonNull

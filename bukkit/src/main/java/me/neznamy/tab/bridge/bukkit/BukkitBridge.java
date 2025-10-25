@@ -1,5 +1,6 @@
 package me.neznamy.tab.bridge.bukkit;
 
+import com.vanguardfactions.tab.RedisPlaceholderUpdater;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -38,6 +39,11 @@ public class BukkitBridge extends JavaPlugin implements Listener {
         BridgeTabExpansion expansion = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") ? new BridgeTabExpansion() : null;
         BukkitPlatform platform = new BukkitPlatform(this);
         TABBridge.setInstance(new TABBridge(platform, expansion));
+
+        // VANGUARD - START
+        RedisPlaceholderUpdater.init();
+        // VANGUARD - END
+
         platform.startTasks();
         if (expansion != null) expansion.register();
 

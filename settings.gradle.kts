@@ -2,6 +2,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 dependencyResolutionManagement {
     repositories {
+        mavenLocal()
         mavenCentral() // LuckPerms, bStats
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") // Spigot API
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI

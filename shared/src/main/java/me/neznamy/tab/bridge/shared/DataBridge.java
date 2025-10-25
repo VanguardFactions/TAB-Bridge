@@ -3,15 +3,16 @@ package me.neznamy.tab.bridge.shared;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import com.vanguardfactions.esssentials.player.server.PlayerInfo;
+import com.vanguardfactions.esssentials.player.server.PlayerInfoService;
+import com.vanguardfactions.tab.RedisPlaceholderUpdater;
 import lombok.Getter;
 import lombok.NonNull;
 import me.neznamy.tab.bridge.shared.message.incoming.ExpansionPlaceholder;
 import me.neznamy.tab.bridge.shared.message.incoming.IncomingMessage;
 import me.neznamy.tab.bridge.shared.message.incoming.PermissionCheck;
 import me.neznamy.tab.bridge.shared.message.incoming.PlaceholderRegister;
-import me.neznamy.tab.bridge.shared.message.outgoing.PlayerJoinResponse;
-import me.neznamy.tab.bridge.shared.message.outgoing.UpdatePlaceholder;
-import me.neznamy.tab.bridge.shared.message.outgoing.UpdateRelationalPlaceholder;
+import me.neznamy.tab.bridge.shared.message.outgoing.*;
 import me.neznamy.tab.bridge.shared.placeholder.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -223,6 +224,26 @@ public class DataBridge {
                 }
                 continue;
             }
+
+            // VANGUARD - START
+            if (placeholder instanceof RelationalOfflinePlaceholder) {
+                final RelationalOfflinePlaceholder pl = (RelationalOfflinePlaceholder) placeholder;
+                final Collection<PlayerInfo> players = PlayerInfoService.get().getAllPlayers();
+                for (final PlayerInfo player : players) {
+                    final List<UpdateRelationalPlaceholder> toUpdate = new ArrayList<>();
+                    for (final BridgePlayer viewer : TABBridge.getInstance().getOnlinePlayers()) {
+                        if (pl.update(viewer.getUniqueId(), player.getId())) {
+                            toUpdate.add(new UpdateRelationalPlaceholder(pl.getIdentifier(), viewer.getName(), pl.getLastValue(viewer.getUniqueId(), player.getId())));
+                        }
+                    }
+                    if (!toUpdate.isEmpty()) {
+                        RedisPlaceholderUpdater.update(player.getId(), toUpdate);
+                    }
+                }
+                continue;
+            }
+            // VANGUARD - END
+
             for (BridgePlayer player : TABBridge.getInstance().getOnlinePlayers()) {
                 if (placeholder instanceof PlayerPlaceholder) {
                     PlayerPlaceholder pl = (PlayerPlaceholder) placeholder;
