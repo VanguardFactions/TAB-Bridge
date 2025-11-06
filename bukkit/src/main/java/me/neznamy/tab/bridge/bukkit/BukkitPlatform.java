@@ -82,16 +82,17 @@ public class BukkitPlatform implements Platform {
                 return new ServerPlaceholder(publicIdentifier, -1, () -> "<PlaceholderAPI is not installed>");
             }
         }
+
+
+        // VANGUARD - START
+        if (privateIdentifier.equalsIgnoreCase("%rel_vanguard_faction%")) { // TODO: Should move this to a separate addon module
+            return new RelationalOfflinePlaceholder(publicIdentifier, 20, FactionUtil::getRelationTag);
+        }
+        // VANGUARD - END
+
         if (privateIdentifier.startsWith("%server_")) {
             return new ServerPlaceholder(publicIdentifier, refresh, () -> parseWithNestedPlaceholders(null, privateIdentifier));
         } else if (privateIdentifier.startsWith("%rel_")) {
-
-            // VANGUARD - START
-            if (privateIdentifier.equals("%rel_vanguard_faction%")) { // TODO: Should move this to a separate addon module
-                return new RelationalOfflinePlaceholder(publicIdentifier, 100, FactionUtil::getRelationTag);
-            }
-            // VANGUARD - END
-
             return new RelationalPlaceholder(publicIdentifier, refresh, (viewer, target) ->
                 PlaceholderAPI.setRelationalPlaceholders(((BukkitBridgePlayer) viewer).getPlayer(),
                     ((BukkitBridgePlayer) target).getPlayer(), privateIdentifier));

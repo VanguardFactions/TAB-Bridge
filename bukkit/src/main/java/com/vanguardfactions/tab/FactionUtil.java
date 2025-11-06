@@ -20,7 +20,7 @@ public class FactionUtil {
 
   private static String getTag(final Faction faction, final Relation relation) {
     if (faction.isWilderness()) {
-      return "";
+      return " ";
     }
     final String tag = "[" + faction.getTag() + "] ";
     switch (relation) {
@@ -37,7 +37,7 @@ public class FactionUtil {
 
   private static String getPosition(final Faction faction) {
     if (faction.isWilderness()) {
-      return "";
+      return " ";
     }
     final int position = CmdTop.ORDERED_FACTIONS.indexOf(faction) + 1;
     final StringBuilder format = new StringBuilder();

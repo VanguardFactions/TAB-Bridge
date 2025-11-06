@@ -228,17 +228,20 @@ public class DataBridge {
             // VANGUARD - START
             if (placeholder instanceof RelationalOfflinePlaceholder) {
                 final RelationalOfflinePlaceholder pl = (RelationalOfflinePlaceholder) placeholder;
-                final Collection<PlayerInfo> players = PlayerInfoService.get().getAllPlayers();
-                for (final PlayerInfo player : players) {
+                for (final BridgePlayer viewer : TABBridge.getInstance().getOnlinePlayers()) {
                     final List<UpdateRelationalPlaceholder> toUpdate = new ArrayList<>();
-                    for (final BridgePlayer viewer : TABBridge.getInstance().getOnlinePlayers()) {
+                    for (final PlayerInfo player : PlayerInfoService.get().getAllPlayers()) {
                         if (pl.update(viewer.getUniqueId(), player.getId())) {
-                            toUpdate.add(new UpdateRelationalPlaceholder(pl.getIdentifier(), viewer.getName(), pl.getLastValue(viewer.getUniqueId(), player.getId())));
+                            //toUpdate.add(new UpdateRelationalPlaceholder(pl.getIdentifier(), player.getName(), pl.getLastValue(viewer.getUniqueId(), player.getId())));
+                            viewer.sendPluginMessage(new UpdateRelationalPlaceholder(pl.getIdentifier(), player.getName(), pl.getLastValue(viewer.getUniqueId(), player.getId())));
                         }
                     }
+                    /*
                     if (!toUpdate.isEmpty()) {
-                        RedisPlaceholderUpdater.update(player.getId(), toUpdate);
+                        RedisPlaceholderUpdater.update(viewer.getUniqueId(), toUpdate);
                     }
+
+                     */
                 }
                 continue;
             }
