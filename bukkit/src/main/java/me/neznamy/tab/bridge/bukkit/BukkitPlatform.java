@@ -88,7 +88,7 @@ public class BukkitPlatform implements Platform {
 
             // VANGUARD - START
             if (privateIdentifier.equals("%rel_vanguard_faction%")) { // TODO: Should move this to a separate addon module
-                return new RelationalOfflinePlaceholder(publicIdentifier, 20, FactionUtil::getRelationTag);
+                return new RelationalOfflinePlaceholder(publicIdentifier, 100, FactionUtil::getRelationTag);
             }
             // VANGUARD - END
 
